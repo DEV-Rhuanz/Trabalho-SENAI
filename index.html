@@ -1,0 +1,1039 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>DevSafe SST – Ergonomia e Segurança do Trabalho para TI</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
+  <style>
+    /* ===== Design tokens (contraste AA ≥ 4,5:1) ===== */
+    :root {
+      --bg: #f5f6fb;
+      --surface: rgba(255,255,255,.82);
+      --solid: #fff;
+      --text: #111827;
+      --muted: #4b5563;
+      --primary: #4338ca;
+      --on-primary: #fff;
+      --accent: #0f766e;
+      --border: #dfe3ee;
+      --ok: #166534;
+      --warn: #92400e;
+      --bad: #b91c1c;
+      --focus: #b45309;
+      --shadow: 0 1px 2px rgba(17,24,39,.06), 0 8px 24px rgba(67,56,202,.08);
+      --hero: radial-gradient(60% 80% at 15% 0%, #e0e7ff 0%, transparent 70%), radial-gradient(50% 70% at 90% 10%, #ccfbf1 0%, transparent 70%);
+      box-sizing: border-box;
+      padding-top: env(safe-area-inset-top, 0px);
+      padding-bottom: env(safe-area-inset-bottom, 0px);
+      color-scheme: light;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root:not([data-theme="light"]) {
+        --bg: #0b1020;
+        --surface: rgba(23,30,52,.72);
+        --solid: #141b30;
+        --text: #f1f5f9;
+        --muted: #a9b4c8;
+        --primary: #a5b4fc;
+        --on-primary: #0b1020;
+        --accent: #5eead4;
+        --border: #2a3553;
+        --ok: #86efac;
+        --warn: #fcd34d;
+        --bad: #fca5a5;
+        --focus: #fbbf24;
+        --shadow: 0 1px 2px rgba(0,0,0,.4), 0 10px 30px rgba(0,0,0,.35);
+        --hero: radial-gradient(60% 80% at 15% 0%, #1e1b4b 0%, transparent 70%), radial-gradient(50% 70% at 90% 10%, #042f2e 0%, transparent 70%);
+        color-scheme: dark;
+      }
+    }
+
+    :root[data-theme="dark"] {
+      --bg: #0b1020;
+      --surface: rgba(23,30,52,.72);
+      --solid: #141b30;
+      --text: #f1f5f9;
+      --muted: #a9b4c8;
+      --primary: #a5b4fc;
+      --on-primary: #0b1020;
+      --accent: #5eead4;
+      --border: #2a3553;
+      --ok: #86efac;
+      --warn: #fcd34d;
+      --bad: #fca5a5;
+      --focus: #fbbf24;
+      --shadow: 0 1px 2px rgba(0,0,0,.4), 0 10px 30px rgba(0,0,0,.35);
+      --hero: radial-gradient(60% 80% at 15% 0%, #1e1b4b 0%, transparent 70%), radial-gradient(50% 70% at 90% 10%, #042f2e 0%, transparent 70%);
+      color-scheme: dark;
+    }
+
+    *, *::before, *::after {
+      box-sizing: inherit;
+    }
+
+    html {
+      scroll-padding-top: calc(env(safe-area-inset-top, 0px) + 1rem);
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font: 500 1rem/1.6 "Plus Jakarta Sans", system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+      transition: background .3s, color .3s;
+    }
+
+    h1, h2, h3 {
+      line-height: 1.2;
+      margin: 0 0 .5rem;
+      font-weight: 700;
+      letter-spacing: -.02em;
+    }
+
+    h1 {
+      font-size: clamp(2.2rem, 5.5vw, 3.6rem);
+      font-weight: 800;
+    }
+
+    h2 {
+      font-size: 1.75rem;
+    }
+
+    h3 {
+      font-size: 1.05rem;
+    }
+
+    p {
+      margin: 0 0 .75rem;
+    }
+
+    :focus-visible {
+      outline: 3px solid var(--focus);
+      outline-offset: 3px;
+      border-radius: 8px;
+    }
+
+    .skip {
+      position: absolute;
+      left: -999px;
+      top: 0;
+      background: var(--primary);
+      color: var(--on-primary);
+      padding: .6rem 1rem;
+      z-index: 50;
+    }
+
+    .skip:focus {
+      left: .5rem;
+    }
+
+    .wrap {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 0 1.25rem;
+    }
+
+    .bg-hero {
+      background: var(--hero);
+    }
+
+    /* Navegação (sem sublinhado) */
+    .bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      padding: 1rem 0;
+    }
+
+    .brand, nav a {
+      text-decoration: none;
+    }
+
+    .brand {
+      font-weight: 800;
+      font-size: 1.2rem;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+    }
+
+    .logo {
+      display: grid;
+      place-items: center;
+      width: 34px;
+      height: 34px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      color: var(--on-primary);
+      font-size: 1.1rem;
+    }
+
+    nav ul {
+      list-style: none;
+      display: flex;
+      gap: .25rem;
+      margin: 0;
+      padding: 0;
+    }
+
+    nav a {
+      display: block;
+      padding: .5rem .9rem;
+      border-radius: 999px;
+      color: var(--muted);
+      font-weight: 600;
+      transition: background .2s, color .2s;
+    }
+
+    nav a:hover {
+      background: var(--surface);
+      color: var(--text);
+    }
+
+    @media (max-width: 760px) {
+      nav { display: none; }
+    }
+
+    /* Botão de tema */
+    .theme {
+      position: relative;
+      width: 46px;
+      height: 46px;
+      border-radius: 50%;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      backdrop-filter: blur(10px);
+      cursor: pointer;
+      box-shadow: var(--shadow);
+      transition: transform .2s, border-color .2s;
+      overflow: hidden;
+    }
+
+    .theme:hover {
+      transform: translateY(-2px);
+      border-color: var(--primary);
+    }
+
+    .ico {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      font-size: 1.3rem;
+      transition: transform .45s cubic-bezier(.2,.8,.2,1), opacity .3s;
+    }
+
+    .sun {
+      transform: rotate(-90deg) scale(.4);
+      opacity: 0;
+    }
+
+    :root[data-theme="dark"] .sun {
+      transform: none;
+      opacity: 1;
+    }
+
+    :root[data-theme="dark"] .moon {
+      transform: rotate(90deg) scale(.4);
+      opacity: 0;
+    }
+
+    /* Botões */
+    .btn {
+      font: inherit;
+      font-weight: 700;
+      min-height: 46px;
+      padding: .55rem 1.3rem;
+      border-radius: 12px;
+      border: 1px solid var(--primary);
+      background: var(--primary);
+      color: var(--on-primary);
+      cursor: pointer;
+      transition: transform .15s, box-shadow .2s, background .2s;
+    }
+
+    .btn:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(67,56,202,.28);
+    }
+
+    .btn:active:not(:disabled) {
+      transform: none;
+    }
+
+    .btn.sec {
+      background: transparent;
+      color: var(--text);
+      border-color: var(--border);
+    }
+
+    .btn.sec:hover:not(:disabled) {
+      border-color: var(--primary);
+      box-shadow: var(--shadow);
+    }
+
+    .btn:disabled {
+      opacity: .55;
+      cursor: not-allowed;
+    }
+
+    /* Hero */
+    .hero {
+      padding: 3rem 0 2.5rem;
+    }
+
+    .pill {
+      display: inline-block;
+      padding: .3rem .9rem;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--primary);
+      font-weight: 700;
+      font-size: .85rem;
+      margin-bottom: 1rem;
+    }
+
+    .grad {
+      background: linear-gradient(90deg, var(--primary), var(--accent));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .lead {
+      font-size: 1.2rem;
+      color: var(--muted);
+      max-width: 44ch;
+    }
+
+    .feats {
+      display: grid;
+      gap: 1rem;
+      grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr));
+      margin-top: 2rem;
+    }
+
+    .feat b {
+      display: block;
+      font-size: 1.05rem;
+      margin: .4rem 0 .2rem;
+    }
+
+    .feat span {
+      color: var(--muted);
+      font-size: .95rem;
+    }
+
+    /* Cards */
+    .card {
+      background: var(--surface);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 1.5rem;
+      box-shadow: var(--shadow);
+      transition: transform .2s, box-shadow .2s;
+    }
+
+    .card.lift:hover {
+      transform: translateY(-3px);
+    }
+
+    section.mod {
+      padding: 2.5rem 0;
+    }
+
+    .sub {
+      color: var(--muted);
+      margin-bottom: 1.25rem;
+    }
+
+    .tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .5rem;
+      list-style: none;
+      padding: 0;
+      margin: 0 0 1.5rem;
+    }
+
+    .tags li {
+      border: 1px solid var(--border);
+      background: var(--surface);
+      border-radius: 999px;
+      padding: .25rem .8rem;
+      font-size: .9rem;
+      font-weight: 600;
+    }
+
+    .grid {
+      display: grid;
+      gap: 1.25rem;
+      grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr));
+    }
+
+    /* Temporizador */
+    .timer {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+
+    .ring {
+      position: relative;
+      width: 210px;
+      height: 210px;
+    }
+
+    .ring svg {
+      transform: rotate(-90deg);
+    }
+
+    .ring circle {
+      fill: none;
+      stroke-width: 9;
+    }
+
+    .ring .bgc {
+      stroke: var(--border);
+    }
+
+    .ring .fg {
+      stroke: url(#g);
+      stroke-linecap: round;
+      transition: stroke-dashoffset .9s linear;
+    }
+
+    .time {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-content: center;
+      font-size: 2.6rem;
+      font-weight: 800;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .time small {
+      display: block;
+      font-size: .85rem;
+      font-weight: 600;
+      color: var(--muted);
+    }
+
+    .row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .6rem;
+      margin: 1.1rem 0;
+      justify-content: center;
+    }
+
+    progress {
+      width: 100%;
+      height: 10px;
+      accent-color: var(--primary);
+    }
+
+    .check {
+      display: flex;
+      gap: .5rem;
+      align-items: center;
+      color: var(--muted);
+      font-size: .92rem;
+    }
+
+    .check input {
+      width: 20px;
+      height: 20px;
+      accent-color: var(--primary);
+    }
+
+    .stats {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .stat {
+      flex: 1;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: .75rem;
+      background: var(--solid);
+    }
+
+    .stat b {
+      display: block;
+      font-size: 1.5rem;
+    }
+
+    .stat span {
+      color: var(--muted);
+      font-size: .85rem;
+    }
+
+    .msg {
+      border-left: 5px solid var(--primary);
+      background: var(--solid);
+      padding: .8rem 1rem;
+      border-radius: 12px;
+      margin-top: .75rem;
+    }
+
+    .msg.eye {
+      border-color: var(--warn);
+    }
+
+    .msg ul {
+      margin: .4rem 0 .8rem;
+      padding-left: 1.2rem;
+    }
+
+    #toasts {
+      position: fixed;
+      right: 1rem;
+      bottom: calc(1rem + env(safe-area-inset-bottom, 0px));
+      display: grid;
+      gap: .5rem;
+      max-width: min(92vw, 360px);
+      z-index: 40;
+    }
+
+    .toast {
+      background: var(--solid);
+      color: var(--text);
+      border: 1px solid var(--primary);
+      border-radius: 14px;
+      padding: .8rem 1rem;
+      box-shadow: var(--shadow);
+      animation: in .3s ease;
+    }
+
+    @keyframes in {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: none; }
+    }
+
+    /* Checklist */
+    fieldset {
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      margin: 0 0 .75rem;
+      padding: .7rem 1rem;
+      background: var(--solid);
+    }
+
+    legend {
+      font-weight: 600;
+      padding: 0 .4rem;
+    }
+
+    .opts {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0 1.25rem;
+    }
+
+    .opts label {
+      display: inline-flex;
+      align-items: center;
+      gap: .4rem;
+      min-height: 44px;
+      cursor: pointer;
+    }
+
+    input[type=radio] {
+      width: 20px;
+      height: 20px;
+      accent-color: var(--primary);
+    }
+
+    .ref {
+      font-size: .8rem;
+      color: var(--muted);
+      font-weight: 600;
+    }
+
+    label.f {
+      display: block;
+      font-weight: 600;
+      margin: .9rem 0 .3rem;
+    }
+
+    select, textarea, input[type=text] {
+      width: 100%;
+      font: inherit;
+      color: var(--text);
+      background: var(--solid);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: .7rem .8rem;
+      transition: border-color .2s;
+    }
+
+    select:hover, textarea:hover, input[type=text]:hover {
+      border-color: var(--primary);
+    }
+
+    .err {
+      color: var(--bad);
+      font-weight: 700;
+      min-height: 1.4em;
+      margin: .5rem 0;
+    }
+
+    .badge {
+      display: inline-block;
+      border: 2px solid currentColor;
+      border-radius: 999px;
+      padding: .15rem .9rem;
+      font-weight: 800;
+    }
+
+    .low { color: var(--ok); }
+    .mod-r { color: var(--warn); }
+    .crit { color: var(--bad); }
+
+    pre {
+      white-space: pre-wrap;
+      background: var(--solid);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: .75rem;
+      font: 500 .9rem/1.5 ui-monospace, Menlo, Consolas, monospace;
+    }
+
+    .code {
+      font: 800 1.5rem ui-monospace, Menlo, Consolas, monospace;
+      letter-spacing: .06em;
+      border: 2px dashed var(--primary);
+      display: inline-block;
+      padding: .4rem .9rem;
+      border-radius: 12px;
+    }
+
+    /* Status CIPA em pilha vertical */
+    .status {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: .6rem;
+      margin-top: .5rem;
+    }
+
+    .status p {
+      margin: 0;
+    }
+
+    footer {
+      border-top: 1px solid var(--border);
+      margin-top: 2rem;
+      padding: 1.5rem 0;
+      color: var(--muted);
+      font-size: .9rem;
+    }
+
+    .sr {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      clip: rect(0 0 0 0);
+      white-space: nowrap;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      * { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+    }
+  </style>
+</head>
+<body>
+  <a class="skip" href="#main">Ir para o conteúdo principal</a>
+
+  <div class="bg-hero">
+    <header class="wrap bar">
+      <a class="brand" href="#inicio" aria-label="DevSafe SST – início">
+        <span class="logo" aria-hidden="true">🛡️</span>DevSafe SST
+      </a>
+      <nav aria-label="Navegação principal">
+        <ul>
+          <li><a href="#pausas">Pausas</a></li>
+          <li><a href="#checklist">Checklist</a></li>
+          <li><a href="#canal">Canal de riscos</a></li>
+        </ul>
+      </nav>
+      <button class="theme" id="btn-theme" aria-label="Alternar para modo escuro" title="Alternar tema">
+        <span class="ico moon" aria-hidden="true">🌙</span>
+        <span class="ico sun" aria-hidden="true">☀️</span>
+      </button>
+    </header>
+
+    <main id="main">
+      <section class="wrap hero" id="inicio" aria-labelledby="h-hero">
+        <span class="pill">NR-01 · NR-05 · NR-17</span>
+        <h1 id="h-hero"><span class="grad">DevSafe</span> SST</h1>
+        <p class="lead"><strong>Tecnologia, Ergonomia e Segurança do Trabalho para Ambientes de TI.</strong></p>
+        <p class="lead">Previna LER/DORT, fadiga visual e Burnout na rotina de quem programa.</p>
+        <div class="feats">
+          <div class="card feat lift">
+            <span aria-hidden="true">⏱️</span>
+            <b>Pausas ativas</b>
+            <span>Regra 20-20-20 e alongamentos.</span>
+          </div>
+          <div class="card feat lift">
+            <span aria-hidden="true">🪑</span>
+            <b>Checklist ergonômico</b>
+            <span>Risco e ajustes em 12 perguntas.</span>
+          </div>
+          <div class="card feat lift">
+            <span aria-hidden="true">🔒</span>
+            <b>Canal anônimo</b>
+            <span>Relatos seguros para a CIPA.</span>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- MÓDULO 1 -->
+    <section class="mod wrap" id="pausas" aria-labelledby="h-m1">
+      <h2 id="h-m1">Pausas ativas</h2>
+      <p class="sub">Cuide da visão e do corpo durante o expediente.</p>
+      <ul class="tags">
+        <li>👁️ 20 min → olhar 6 m ao longe por 20 s</li>
+        <li>🤸 1 h → alongar (NR-17, item 17.4.3)</li>
+      </ul>
+      <div class="grid">
+        <div class="card timer">
+          <div class="ring" aria-hidden="true">
+            <svg width="210" height="210" viewBox="0 0 120 120">
+              <defs>
+                <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+                  <stop offset="0" stop-color="#6366f1"/>
+                  <stop offset="1" stop-color="#14b8a6"/>
+                </linearGradient>
+              </defs>
+              <circle class="bgc" cx="60" cy="60" r="54"/>
+              <circle class="fg" id="ring" cx="60" cy="60" r="54" stroke-dasharray="339.29" stroke-dashoffset="339.29"/>
+            </svg>
+            <div class="time">
+              <span id="clock">20:00</span>
+              <small id="phase">Trabalho</small>
+            </div>
+          </div>
+          <p class="sr" id="clock-sr">Tempo restante: 20 minutos</p>
+          <label for="prog" class="sr">Progresso do ciclo atual</label>
+          <progress id="prog" max="100" value="0">0%</progress>
+          <div class="row">
+            <button class="btn" id="t-start">Iniciar</button>
+            <button class="btn sec" id="t-pause" disabled>Pausar</button>
+            <button class="btn sec" id="t-reset">Reiniciar</button>
+          </div>
+          <label class="check">
+            <input type="checkbox" id="demo"> Modo demonstração (ciclo de 5 s)
+          </label>
+        </div>
+        <div class="card">
+          <div class="stats">
+            <div class="stat">
+              <b id="cycles">0</b>
+              <span>Pausas visuais</span>
+            </div>
+            <div class="stat">
+              <b id="next-stretch">60 min</b>
+              <span>Até o alongamento</span>
+            </div>
+          </div>
+          <div class="msg" id="timer-msg" role="status" aria-live="polite">Toque em “Iniciar” para começar.</div>
+          <div class="msg eye" id="stretch" hidden>
+            <h3>🤸 Hora de alongar</h3>
+            <ul>
+              <li>Pescoço: incline para cada lado (20 s)</li>
+              <li>Ombros: 10 círculos para trás</li>
+              <li>Punhos: estique e flexione (20 s)</li>
+            </ul>
+            <button class="btn" id="stretch-done">Concluí</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- MÓDULO 2 -->
+    <section class="mod wrap" id="checklist" aria-labelledby="h-m2">
+      <h2 id="h-m2">Checklist ergonômico</h2>
+      <p class="sub">12 perguntas rápidas · escritório ou home office.</p>
+      <ul class="tags">
+        <li>NR-01</li>
+        <li>NR-17</li>
+        <li>NHO-11</li>
+      </ul>
+      <div class="grid">
+        <form class="card" id="form-ck" novalidate>
+          <div id="qs"></div>
+          <p class="err" id="ck-err" role="alert"></p>
+          <button class="btn" type="submit">Calcular risco</button>
+          <button class="btn sec" type="reset">Limpar</button>
+        </form>
+        <div class="card" id="ck-out" tabindex="-1" aria-live="polite">
+          <h3>Resultado</h3>
+          <p class="sub">Sua classificação e recomendações aparecem aqui.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- MÓDULO 3 -->
+    <section class="mod wrap" id="canal" aria-labelledby="h-m3">
+      <h2 id="h-m3">Canal anônimo de riscos</h2>
+      <p class="sub">Relate com segurança. Nada de nome, IP ou dados pessoais.</p>
+      <ul class="tags">
+        <li>NR-05</li>
+        <li>Lei nº 14.457/2022</li>
+        <li>Protótipo simulado</li>
+      </ul>
+      <div class="grid">
+        <form class="card" id="form-rep" novalidate>
+          <label class="f" for="cat" style="margin-top:0">Categoria</label>
+          <select id="cat" required>
+            <option value="">Selecione…</option>
+            <option>Ergonômico</option>
+            <option>Organizacional / Sobrecarga de trabalho</option>
+            <option>Elétrico / Instalações</option>
+            <option>Assédio moral ou sexual</option>
+          </select>
+          <label class="f" for="desc">Descrição</label>
+          <textarea id="desc" rows="5" required placeholder="O que ocorre, onde e com que frequência? Não inclua seu nome."></textarea>
+          <label class="f" for="sug">Sugestão de melhoria (opcional)</label>
+          <textarea id="sug" rows="3"></textarea>
+          <p class="err" id="rep-err" role="alert"></p>
+          <button class="btn" type="submit">Enviar relato anônimo</button>
+        </form>
+        <div class="card" aria-live="polite">
+          <h3>Protocolo</h3>
+          <div id="proto-out">
+            <p class="sub">Após o envio, você recebe um código para acompanhar a resposta da CIPA.</p>
+          </div>
+          <hr style="border:0;border-top:1px solid var(--border);margin:1.25rem 0">
+          <label class="f" for="lookup" style="margin-top:0">Consultar protocolo</label>
+          <input type="text" id="lookup" autocomplete="off" placeholder="DS-XXXX-XXXX">
+          <p style="margin-top:.75rem">
+            <button class="btn sec" id="btn-lookup" type="button">Consultar</button>
+          </p>
+          <div id="lookup-out" role="status"></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap">Protótipo acadêmico · SENAI Vilhena/RO · Técnico em Informática para Internet. Baseado em NR-01, NR-05, NR-10, NR-17 e NHO-11 · WCAG 2.1 AA. Não substitui avaliação de profissional habilitado em SST.</div>
+  </footer>
+  <div id="toasts" aria-live="polite"></div>
+
+  <script>
+    const $ = (s) => document.querySelector(s);
+    const root = document.documentElement;
+    const store = { 
+      get(k){ try { return localStorage.getItem(k); } catch(e){ return null; } }, 
+      set(k,v){ try { localStorage.setItem(k,v); } catch(e){} } 
+    };
+    const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    /* ===== Tema claro/escuro ===== */
+    function setTheme(t){
+      root.dataset.theme = t; 
+      store.set("ds-theme", t);
+      $("#btn-theme").setAttribute("aria-label", t === "dark" ? "Alternar para modo claro" : "Alternar para modo escuro");
+    }
+    setTheme(store.get("ds-theme") || (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light"));
+    $("#btn-theme").onclick = () => setTheme(root.dataset.theme === "dark" ? "light" : "dark");
+
+    function toast(text){
+      const d = document.createElement("div"); 
+      d.className = "toast"; 
+      d.textContent = text;
+      $("#toasts").appendChild(d); 
+      setTimeout(() => d.remove(), 6000);
+    }
+
+    /* ===== Módulo 1: temporizador 20-20-20 ===== */
+    const WORK = 1200, EYE = 20, STRETCH_EVERY = 3600, CIRC = 339.29;
+    const st = { phase:"work", left:WORK, acc:0, cycles:0, id:null };
+    const pad = (n) => String(n).padStart(2, "0");
+
+    function renderTimer(){
+      const total = st.phase === "work" ? WORK : EYE;
+      const m = Math.floor(st.left / 60), s = st.left % 60;
+      $("#clock").textContent = pad(m) + ":" + pad(s);
+      $("#clock-sr").textContent = "Tempo restante: " + m + " minutos e " + s + " segundos";
+      $("#phase").textContent = st.phase === "work" ? "Trabalho" : "Olhe ao longe";
+      const pct = Math.round((1 - st.left / total) * 100);
+      $("#prog").value = pct; 
+      $("#prog").textContent = pct + "%";
+      $("#ring").style.strokeDashoffset = CIRC * (st.left / total);
+      $("#cycles").textContent = st.cycles;
+      $("#next-stretch").textContent = Math.max(0, Math.ceil((STRETCH_EVERY - st.acc) / 60)) + " min";
+    }
+
+    function say(text, eye){ 
+      const el = $("#timer-msg"); 
+      el.textContent = text; 
+      el.classList.toggle("eye", !!eye); 
+      toast(text); 
+    }
+
+    function tick(){
+      const demo = $("#demo").checked;
+      if(st.phase === "work"){
+        const step = demo ? 240 : 1; 
+        st.left -= step; 
+        st.acc += step;
+        if(st.left <= 0){
+          st.phase = "eye"; 
+          st.left = EYE; 
+          st.cycles++;
+          say("Regra 20-20-20: olhe a pelo menos 6 metros por 20 segundos.", true);
+        }
+      } else {
+        st.left -= demo ? 4 : 1; 
+        if(st.left <= 0){
+          st.phase = "work"; 
+          st.left = WORK;
+          if(st.acc >= STRETCH_EVERY){ 
+            st.acc = 0; 
+            $("#stretch").hidden = false; 
+            say("1 hora de trabalho: hora de alongar pescoço, ombros e punhos.", true); 
+          } else {
+            say("Pausa visual concluída. Bom trabalho!");
+          }
+        }
+      }
+      renderTimer();
+    }
+
+    function setRun(on){ 
+      clearInterval(st.id); 
+      if(on) st.id = setInterval(tick, 1000); 
+      $("#t-start").disabled = on; 
+      $("#t-pause").disabled = !on; 
+    }
+
+    $("#t-start").onclick = () => { setRun(true); say("Ciclo iniciado. Boa jornada!"); };
+    $("#t-pause").onclick = () => { setRun(false); say("Temporizador pausado."); };
+    $("#t-reset").onclick = () => { 
+      setRun(false); 
+      Object.assign(st, { phase:"work", left:WORK, acc:0, cycles:0 }); 
+      $("#stretch").hidden = true; 
+      renderTimer(); 
+      $("#timer-msg").textContent = "Temporizador reiniciado."; 
+    };
+    $("#stretch-done").onclick = () => { $("#stretch").hidden = true; toast("Alongamento concluído. Ótimo!"); };
+    renderTimer();
+
+    /* ===== Módulo 2: checklist (Sim=0, Parcialmente=1, Não=2; máx. 24) ===== */
+    const Q = [
+      ["Tela na altura dos olhos (ou notebook com suporte)?","NR-17","Eleve a tela com suporte até a borda superior ficar na linha dos olhos."],
+      ["Uso teclado e mouse externos com notebook?","NR-17","Adote teclado e mouse externos para manter os punhos neutros."],
+      ["Cadeira regulável com apoio lombar?","NR-17","Ajuste a cadeira ou use apoio lombar."],
+      ["Pés apoiados no chão ou em apoio?","NR-17","Use apoio para os pés e mantenha os joelhos próximos de 90°."],
+      ["Antebraços apoiados, cotovelos a cerca de 90°?","NR-17","Regule a altura da mesa ou da cadeira para aliviar ombros e punhos."],
+      ["Tela sem reflexos nem luz direta da janela?","NR-17 / NHO-11","Posicione a mesa de lado para a janela e use cortina ou persiana."],
+      ["Iluminação uniforme e adequada?","NHO-11","Melhore a iluminação geral, sem ofuscamento."],
+      ["Tela a 50–70 cm dos olhos?","NR-17","Ajuste distância e tamanho da fonte para poupar a visão."],
+      ["Faço pausas e mudo de postura ao longo do dia?","NR-17","Use o módulo de pausas ativas."],
+      ["Minha jornada e meu descanso são respeitados?","NR-01","Comunique excesso de jornada ao gestor e ao canal de riscos."],
+      ["Tenho espaço para as pernas e cabos fora do caminho?","NR-17","Reorganize a mesa e prenda os cabos em canaletas."],
+      ["Consigo me desconectar após o expediente?","NR-01 (psicossocial)","Relate a sobrecarga no canal para entrar no Inventário de Riscos do PGR."]
+    ];
+
+    Q.forEach((q, i) => $("#qs").insertAdjacentHTML("beforeend",
+      '<fieldset><legend>' + (i+1) + '. ' + q[0] + '</legend><div class="opts">' +
+      [["0","Sim"],["1","Parcialmente"],["2","Não"]].map(o => '<label><input type="radio" name="q' + i + '" value="' + o[0] + '"> ' + o[1] + '</label>').join("") +
+      '</div><span class="ref">' + q[1] + '</span></fieldset>'
+    ));
+
+    $("#form-ck").addEventListener("submit", (e) => {
+      e.preventDefault();
+      let score = 0, missing = null; 
+      const recs = [];
+      Q.forEach((q, i) => {
+        const c = document.querySelector('input[name="q' + i + '"]:checked');
+        if(!c){ if(missing === null) missing = i; return; }
+        score += +c.value; 
+        if(+c.value > 0) recs.push({ t:q[2], n:+c.value, ref:q[1] });
+      });
+      if(missing !== null){
+        $("#ck-err").textContent = "Responda todas as perguntas. Falta a pergunta " + (missing + 1) + ".";
+        document.querySelector('input[name="q' + missing + '"]').focus(); 
+        return;
+      }
+      $("#ck-err").textContent = "";
+      let lvl = ["Baixo","low","Mantenha os bons hábitos e reavalie a cada 6 meses."];
+      if(score >= 15) lvl = ["Crítico","crit","Aja agora: avise o gestor e a CIPA."];
+      else if(score >= 7) lvl = ["Moderado","mod-r","Corrija os pontos abaixo em até 30 dias."];
+      
+      recs.sort((a,b) => b.n - a.n);
+      const rec = "Autoavaliação ergonômica (NR-01/NR-17)\nData: " + new Date().toLocaleDateString("pt-BR") +
+        "\nPontuação: " + score + "/24 · Risco: " + lvl[0] + "\nPendências: " + recs.length + "\nEncaminhar ao PGR.";
+      
+      $("#ck-out").innerHTML =
+        '<h3>Resultado</h3><p><strong style="font-size:2rem">' + score + '</strong> / 24 &nbsp;<span class="badge ' + lvl[1] + '">' + lvl[0] + '</span></p><p>' + lvl[2] + '</p>' +
+        (recs.length ? '<h3>Recomendações</h3><ul>' + recs.map(r => '<li>' + r.t + ' <span class="ref">' + r.ref + '</span></li>').join("") + '</ul>' : '<p>Nenhum ajuste necessário. 🎉</p>') +
+        '<h3>Registro para o PGR</h3><pre>' + rec + '</pre><button class="btn sec" id="copy" type="button">Copiar registro</button> <span id="copy-msg" role="status"></span>';
+      
+      $("#copy").onclick = () => {
+        const ok = () => $("#copy-msg").textContent = "Copiado.", no = () => $("#copy-msg").textContent = "Copie o texto manualmente.";
+        try { navigator.clipboard.writeText(rec).then(ok, no); } catch(err){ no(); }
+      };
+
+      const out = $("#ck-out");
+      out.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "start" });
+      out.focus({ preventScroll: true });
+    });
+
+    $("#form-ck").addEventListener("reset", () => { 
+      $("#ck-err").textContent = ""; 
+      $("#ck-out").innerHTML = '<h3>Resultado</h3><p class="sub">Sua classificação e recomendações aparecem aqui.</p>'; 
+    });
+
+    /* ===== Módulo 3: canal anônimo (simulado, sem IP nem identificação) ===== */
+    const STATUS = ["Recebido", "Em análise pela CIPA", "Ações em andamento", "Concluído"];
+    const reports = {};
+
+    function newCode(){
+      const abc = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789", a = new Uint32Array(8); 
+      crypto.getRandomValues(a);
+      const c = Array.from(a, v => abc[v % abc.length]).join(""); 
+      return "DS-" + c.slice(0,4) + "-" + c.slice(4);
+    }
+
+    $("#form-rep").addEventListener("submit", (e) => {
+      e.preventDefault();
+      if(!$("#cat").value){ $("#rep-err").textContent = "Selecione a categoria."; $("#cat").focus(); return; }
+      if($("#desc").value.trim().length < 20){ $("#rep-err").textContent = "Descreva o relato com pelo menos 20 caracteres."; $("#desc").focus(); return; }
+      $("#rep-err").textContent = "";
+      const code = newCode(); 
+      reports[code] = { s:0, cat:$("#cat").value }; 
+      $("#proto-out").innerHTML = '<p>Relato enviado. Guarde seu protocolo:</p><p><span class="code">' + code + '</span></p><p class="sub">Status: <strong>' + STATUS[0] + '</strong></p>';
+      $("#form-rep").reset(); 
+      $("#lookup").value = code;
+    });
+
+    $("#btn-lookup").onclick = () => {
+      const r = reports[$("#lookup").value.trim().toUpperCase()], out = $("#lookup-out");
+      if(!r){ out.innerHTML = '<p class="err">Protocolo não encontrado nesta sessão.</p>'; return; }
+      out.innerHTML = '<div class="status"><p>Categoria: <strong>' + r.cat + '</strong></p><p>Status: <strong>' + STATUS[r.s] + '</strong></p>' +
+        (r.s < 3 ? '<button class="btn sec" id="adv" type="button">Simular andamento da CIPA</button>' : '') + '</div>';
+      const adv = $("#adv"); 
+      if(adv) adv.onclick = () => { r.s++; $("#btn-lookup").click(); };
+    };
+  </script>
+</body>
+</html>
